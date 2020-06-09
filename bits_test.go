@@ -1,4 +1,4 @@
-package shortdict
+package wordenc
 
 import (
 	"fmt"

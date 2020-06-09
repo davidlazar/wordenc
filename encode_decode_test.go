@@ -7,7 +7,7 @@ import (
 
 func roundtrip(t *testing.T, data []byte) {
 	encoded := EncodeToString(data)
-	decoded, err := DecodeString(encoded)
+	decoded, err := DecodeString(encoded, len(data))
 	if err != nil {
 		t.Errorf("decoding %v gives error %v", data, err)
 		return
@@ -15,7 +15,6 @@ func roundtrip(t *testing.T, data []byte) {
 	incorrect := false
 	if len(data) != len(decoded) {
 		incorrect = true
-		t.Errorf("encoded/decoded %v has length %d, expected %d", data, len(decoded), len(data))
 	} else {
 		for i := 0; i < len(data); i++ {
 			if data[i] != decoded[i] {
@@ -41,25 +40,21 @@ func TestEncodeDecodeSingleByte(t *testing.T) {
 	roundtrip(t, []byte{0})
 }
 
-func TestEncodeDecodeEvenBytes(t *testing.T) {
+func TestEncodeDecodeTwoBytes(t *testing.T) {
 	roundtrip(t, []byte{2, 3})
 	roundtrip(t, []byte{2, 4})
-	roundtrip(t, []byte{123, 104, 12, 128})
-	roundtrip(t, []byte{123, 104, 12, 86})
-	roundtrip(t, []byte{123, 104, 12, 86, 100, 0})
+	roundtrip(t, []byte{128, 197})
 }
 
-func TestEncodeDecodeOddBytes(t *testing.T) {
+func TestEncodeDecodeMultipleBytes(t *testing.T) {
 	roundtrip(t, []byte{2, 3, 0})
 	roundtrip(t, []byte{0, 2, 3})
+	roundtrip(t, []byte{123, 104, 12, 128})
+	roundtrip(t, []byte{123, 104, 12, 86})
 	roundtrip(t, []byte{123, 4, 104, 12, 86})
-	roundtrip(t, []byte{123, 104, 12, 255, 86, 100, 0})
-}
-
-func TestEncodeDecodeMultipleOfThree(t *testing.T) {
-	roundtrip(t, []byte{2, 3, 0})
-	roundtrip(t, []byte{0, 2, 43})
 	roundtrip(t, []byte{32, 107, 65, 12, 204, 198})
+	roundtrip(t, []byte{123, 104, 12, 86, 100, 0})
+	roundtrip(t, []byte{123, 104, 12, 255, 86, 100, 0})
 }
 
 func BenchmarkEncoding32Bytes(b *testing.B) {
@@ -86,7 +81,7 @@ func BenchmarkDecoding32Bytes(b *testing.B) {
 
 	// Decode them each about 10 times
 	for i := 0; i < b.N; i++ {
-		_, err := DecodeString(encoded[i%len(encoded)])
+		_, err := DecodeString(encoded[i%len(encoded)], 32)
 		if err != nil {
 			b.Error(err)
 		}
