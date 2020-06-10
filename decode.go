@@ -8,10 +8,8 @@ import (
 var wordMapping = make(map[string]int)
 
 func init() {
-	for i, words := range wordList {
-		for _, word := range words {
-			wordMapping[word] = i
-		}
+	for i, word := range English {
+		wordMapping[word] = i
 	}
 }
 

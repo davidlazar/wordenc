@@ -45,10 +45,7 @@ func (b *bits) PadTo(length uint) {
 }
 
 func getWord(index int) string {
-	if index > len(wordList) {
-		return "out-of-range"
-	}
-	return wordList[index][0]
+	return English[index]
 }
 
 // EncodeToString encodes data into a string of words separated by spaces.
