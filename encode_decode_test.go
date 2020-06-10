@@ -1,9 +1,19 @@
 package wordenc
 
 import (
+	"encoding/hex"
 	"math/rand"
 	"testing"
 )
+
+func TestVector(t *testing.T) {
+	entropy, _ := hex.DecodeString("066dca1a2bb7e8a1db2832148ce9933eea0f3ac9548d793112d9a95c9407efad")
+	expected := "all hour make first leader extend hole alien behind guard gospel lava path output census museum junior mass reopen famous sing advance salt parade"
+	s := EncodeToString(entropy)
+	if s != expected {
+		t.Fatalf("want %q, got %q", expected, s)
+	}
+}
 
 func roundtrip(t *testing.T, data []byte) {
 	encoded := EncodeToString(data)
